@@ -31,6 +31,8 @@ src = [
     'src/screen.c',
     'src/server.c',
     'src/version.c',
+    'src/msg.c',
+    'src/msg.h',
     'src/trait/frame_source.c',
     'src/trait/packet_source.c',
     'src/util/acksync.c',
@@ -104,6 +106,7 @@ dependencies = [
     dependency('libavutil'),
     dependency('libswresample'),
     dependency('sdl2', version: '>= 2.0.5'),
+    dependency('nanomsg')
 ]
 
 if v4l2_support
