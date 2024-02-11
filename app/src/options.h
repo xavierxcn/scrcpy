@@ -188,6 +188,7 @@ struct sc_port_range {
 
 struct scrcpy_options {
     const char *serial;
+    bool msg;
     const char *crop;
     const char *record_filename;
     const char *window_title;

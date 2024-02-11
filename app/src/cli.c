@@ -837,6 +837,11 @@ static const struct sc_option options[] = {
         .text = "Set the initial window height.\n"
                 "Default is 0 (automatic).",
     },
+    {
+        .shortopt = 'R',
+        .text = "remote msg",
+
+    }
 };
 
 static const struct sc_shortcut shortcuts[] = {
@@ -2053,6 +2058,9 @@ parse_args_with_getopt(struct scrcpy_cli_args *args, int argc, char *argv[],
                 break;
             case 's':
                 opts->serial = optarg;
+                break;
+            case 'R':
+                opts->msg = true;
                 break;
             case 'S':
                 opts->turn_screen_off = true;
