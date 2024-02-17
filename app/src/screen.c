@@ -8,6 +8,7 @@
 #include "icon.h"
 #include "options.h"
 #include "util/log.h"
+#include "msg.h"
 
 #define DISPLAY_MARGINS 96
 
@@ -619,6 +620,8 @@ sc_screen_update_frame(struct sc_screen *screen) {
     sc_frame_buffer_consume(&screen->fb, screen->frame);
     AVFrame *frame = screen->frame;
 
+    msg_pub_frame(frame);
+
     sc_fps_counter_add_rendered_frame(&screen->fps_counter);
 
     struct sc_size new_frame_size = {frame->width, frame->height};
@@ -733,6 +736,7 @@ sc_screen_handle_event(struct sc_screen *screen, const SDL_Event *event) {
             return true;
         }
         case SC_EVENT_NEW_FRAME: {
+            // 更新一帧
             bool ok = sc_screen_update_frame(screen);
             if (!ok) {
                 LOGE("Frame update failed\n");

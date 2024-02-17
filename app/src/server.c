@@ -23,6 +23,7 @@
 #define SC_ADB_PORT_DEFAULT 5555
 #define SC_SOCKET_NAME_PREFIX "scrcpy_"
 
+// 获取server的路径
 static char *
 get_server_path(void) {
 #ifdef __WINDOWS__
@@ -965,6 +966,7 @@ run_server(void *data) {
     assert(r == sizeof(SC_SOCKET_NAME_PREFIX) - 1 + 8);
     assert(server->device_socket_name);
 
+    // 开启adb tunnel
     ok = sc_adb_tunnel_open(&server->tunnel, &server->intr, serial,
                             server->device_socket_name, params->port_range,
                             params->force_adb_forward);

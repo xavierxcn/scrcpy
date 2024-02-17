@@ -159,6 +159,7 @@ sdl_configure(bool video_playback, bool disable_screensaver) {
     }
 }
 
+// 循环监听屏幕事件
 static enum scrcpy_exit_code
 event_loop(struct scrcpy *s) {
     SDL_Event event;
