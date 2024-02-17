@@ -620,7 +620,11 @@ sc_screen_update_frame(struct sc_screen *screen) {
     sc_frame_buffer_consume(&screen->fb, screen->frame);
     AVFrame *frame = screen->frame;
 
-    msg_pub_frame(frame);
+    int ret = msg_pub_frame(frame);
+    if (ret < 0) {
+        LOGE("Could not publish frame: %s", av_err2str(ret));
+        return false;
+    }
 
     sc_fps_counter_add_rendered_frame(&screen->fps_counter);
 

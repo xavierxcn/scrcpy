@@ -59,21 +59,35 @@ static uint8_t* frame_as_jpeg(AVFrame *frame, int *out_size) {
         return NULL;
     }
 
-    pCodecCtx = pStream->codecpar;
-    pCodecCtx->codec_id = AV_CODEC_ID_MJPEG;
-    pCodecCtx->codec_type = AVMEDIA_TYPE_VIDEO;
-    pCodecCtx->pix_fmt = AV_PIX_FMT_YUVJ420P;
-    pCodecCtx->width = frame->width;
-    pCodecCtx->height = frame->height;
-    pCodecCtx->time_base.num = 1;
-    pCodecCtx->time_base.den = 25;
+    AVCodecParameters *pCodecPar = pStream->codecpar;
+    pCodecPar->codec_id = AV_CODEC_ID_MJPEG;
+    pCodecPar->codec_type = AVMEDIA_TYPE_VIDEO;
+    pCodecPar->format = AV_PIX_FMT_YUVJ420P;
+    pCodecPar->width = frame->width;
+    pCodecPar->height = frame->height;
 
     // 查找编解码器
-    pCodec = avcodec_find_encoder(pCodecCtx->codec_id);
+    pCodec = avcodec_find_encoder(pCodecPar->codec_id);
     if (!pCodec) {
         printf("Codec not found\n");
         return NULL;
     }
+
+    // 创建一个编解码器上下文
+    pCodecCtx = avcodec_alloc_context3(pCodec);
+    if (!pCodecCtx) {
+        printf("Could not alloc codec context\n");
+        return NULL;
+    }
+
+    // 从AVCodecParameters复制参数到AVCodecContext
+    if (avcodec_parameters_to_context(pCodecCtx, pCodecPar) < 0) {
+        printf("Could not copy parameters to codec context\n");
+        return NULL;
+    }
+
+    pCodecCtx->time_base.num = 1;
+    pCodecCtx->time_base.den = 25;
 
     // 打开编解码器
     if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
