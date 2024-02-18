@@ -58,6 +58,7 @@ sc_controller_destroy(struct sc_controller *controller) {
     sc_receiver_destroy(&controller->receiver);
 }
 
+// 屏幕控制事件
 bool
 sc_controller_push_msg(struct sc_controller *controller,
                        const struct sc_control_msg *msg) {
