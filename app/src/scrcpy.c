@@ -6,6 +6,7 @@
 #include <libavformat/avformat.h>
 #include <sys/time.h>
 #include <SDL2/SDL.h>
+#include "msg.h"
 
 #ifdef _WIN32
 // not needed here, but winsock2.h must never be included AFTER windows.h
@@ -799,6 +800,8 @@ aoa_hid_end:
 
         timeout_started = true;
     }
+
+    msg_sub_ctrl();
 
     ret = event_loop(s);
     LOGD("quit...");

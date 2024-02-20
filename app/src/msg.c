@@ -13,6 +13,7 @@
 int msg_pub_frame(AVFrame *frame);
 
 static int pub_socket = -1;
+static int sub_socket = -1;
 
 static int get_pub_socket() {
     if (pub_socket == -1) {
@@ -161,6 +162,40 @@ int msg_pub_frame(AVFrame *frame) {
     int ret = nn_send(sock, data, size, 0);
     if (ret < 0) {
         fprintf(stderr, "nn_send() failed: %s\n", nn_strerror(ret));
+        return -1;
+    }
+
+    return 0;
+}
+
+int get_sub_socket() {
+    if (sub_socket == -1) {
+        int rv;
+        sub_socket = nn_socket(AF_SP, NN_SUB);
+        if (sub_socket < 0) {
+            fprintf(stderr, "nn_socket() failed: %s\n", nn_strerror(sub_socket));
+            return -1;
+        }
+
+        rv = nn_bind(sub_socket, "tcp://127.0.0.1:5556");
+        if (rv < 0) {
+            fprintf(stderr, "nn_bind() failed: %s\n", nn_strerror(sub_socket));
+            return -1;
+        }
+    }
+
+    return sub_socket;
+}
+
+int msg_sub_ctrl(void) {
+    int sock;
+
+    sock = get_sub_socket();
+    char buf[MAX_BUF_SIZE];
+
+    int ret = nn_recv(sock, buf, MAX_BUF_SIZE, 0);
+    if (ret < 0) {
+        fprintf(stderr, "nn_recv() failed: %s\n", nn_strerror(ret));
         return -1;
     }
 
